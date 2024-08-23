@@ -1,0 +1,101 @@
+﻿@model ProdutoViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        $('#incluirModalEditar').on('hidden.bs.modal', function () {
+            if ('@(Model != null)' == 'True')
+                window.location.href = '@Url.Action("Index", "Home")';
+        });
+
+        function fecharModal() {
+            $('#incluirModalEditar').modal('toggle');
+        }
+
+        if ('@(Model != null)' == 'True')
+            $("#incluirEdit").click();
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Produtos</h1>
+    <button id="incluirEdit" type="button" class="btn btn-primary" style="display: flex;" data-bs-toggle="modal" data-bs-target="#incluirModalEditar">Incluir</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">@Html.DisplayNameFor(model => model.Name)</th>
+                <th scope="col">@Html.DisplayNameFor(model => model.Code)</th>
+                <th scope="col">@Html.DisplayNameFor(model => model.Description)</th>
+                <th scope="col">@Html.DisplayNameFor(model => model.Price)</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ProdutoViewModel produto in ViewBag.Produtos)
+            {
+                <tr>
+                    <td>@Html.ActionLink(@produto.Name, "Get", "Home", new { id = produto.Id })</td>
+                    <td>@Html.DisplayFor(x => produto.Code)</td>
+                    <td>@Html.DisplayFor(x => produto.Description)</td>
+                    <td>@Html.DisplayFor(x => produto.Price)</td>
+                    <td>
+                        @using (Html.BeginForm("Delete", "Home", FormMethod.Post))
+                        {
+                            <input id="@Html.Id("Id" + produto.Id)" name="Id" type="hidden" value="@produto.Id">
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="incluirModalEditar" tabindex="-1" aria-labelledby="incluirModalEditarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Post", "Home", FormMethod.Post))
+            {
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <input id="IdEdit" name="Id" type="hidden" value="@ViewBag.ProdutoId">
+
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="incluirModalEditarLabel">Produto</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "Nome do produto" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.Name)
+                    </div>
+                    <div class="form-floating mb-3">
+                        @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Código do produto" } })
+                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.Code)
+                    </div>
+                    <div class="form-floating mb-3">
+                        @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control", @type = "number", @min = "0", @placeholder = "Preço do produto" }})
+                        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.Price)
+                    </div>
+                    <div class="form-floating">
+                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control textboxFor", @placeholder = "Descrição do produto", @styles = "height: 100px" })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.Description)
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="fecharModal()">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

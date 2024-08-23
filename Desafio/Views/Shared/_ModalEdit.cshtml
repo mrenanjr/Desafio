@@ -1,0 +1,43 @@
+﻿@model ProdutoViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+@using (Html.BeginForm("Post", "Home", FormMethod.Post, new { id = "myFormProduto" }))
+{
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="incluirModalLabel">Produto</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="form-floating mb-3">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "Nome do produto" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="form-floating mb-3">
+            @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Código do produto" } })
+            @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Code)
+        </div>
+        <div class="form-floating mb-3">
+            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Descrição do produto" } })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Description)
+        </div>
+        <div class="form-floating mb-3">
+            @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control", @type = "number", @step = "any", @placeholder = "Preço do produto" } })
+            @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Price)
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+}
